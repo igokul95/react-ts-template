@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from '../logo.svg';
 import './App.css';
+import { Store } from '../types';
 
-function App() {
+import * as actions from '../actions'
+import { connect } from 'react-redux';
+
+type Props = {
+  message: string;
+  sampleAPI: () => void;
+}
+
+const App = (props: Props) => {
+  useEffect(() => {
+    props.sampleAPI()
+  }, []);
+  
   return (
     <div className="App">
       <header className="App-header">
@@ -16,11 +29,19 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Learn React, {props.message}
         </a>
       </header>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (store: Store) => {
+  return ({
+      message: store.sampleReducer.message,
+  })
+} 
+
+export default connect(mapStateToProps, {
+  sampleAPI: () => actions.sampleAsyncAction.request()
+})(App);
